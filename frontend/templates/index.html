@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignSpeak AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤟 SignSpeak AI</h1>
+            <p>Real-time ASL Translation System</p>
+        </header>
+        
+        <main>
+            <div class="camera-section">
+                <h2>📹 Camera Feed</h2>
+                <div id="camera-container">
+                    <!-- Camera feed will be inserted here -->
+                </div>
+            </div>
+            
+            <div class="translation-section">
+                <h2>📝 Translation</h2>
+                <div id="sentence-display">
+                    <!-- Current sentence will appear here -->
+                </div>
+                <div id="translation-display">
+                    <!-- Translation will appear here -->
+                </div>
+                <div class="controls">
+                    <button id="speak-btn">🎤 Speak</button>
+                    <button id="reset-btn">🔄 Reset</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
