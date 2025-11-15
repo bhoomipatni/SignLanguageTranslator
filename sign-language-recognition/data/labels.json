@@ -1,0 +1,12 @@
+{
+  "hello": "greeting",
+  "thank you": "gratitude",
+  "goodbye": "farewell",
+  "please": "politeness",
+  "yes": "affirmation",
+  "no": "negation",
+  "help": "assistance",
+  "sorry": "apology",
+  "more": "quantity",
+  "stop": "command"
+}
