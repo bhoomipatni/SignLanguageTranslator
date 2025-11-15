@@ -4,6 +4,10 @@ Configuration Management for SignSpeak AI
 
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # API Configuration
 def get_gemini_api_key() -> Optional[str]:
