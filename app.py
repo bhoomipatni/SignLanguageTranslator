@@ -1,20 +1,13 @@
-"""
-SignSpeak AI - Main Entry Point
-Real-time ASL translation system for hackathon
-"""
+from flask import Flask, render_template
 
-import streamlit as st
-from frontend.ui import main_interface
+# Configure Flask to use the frontend folders for static files and templates
+app = Flask(__name__, static_folder='frontend/static', template_folder='frontend/templates')
 
-def main():
-    """Main entry point for SignSpeak AI application"""
-    st.set_page_config(
-        page_title="SignSpeak AI",
-        page_icon="🤟",
-        layout="wide"
-    )
-    
-    main_interface()
 
-if __name__ == "__main__":
-    main()
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

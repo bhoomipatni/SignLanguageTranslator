@@ -1,42 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SignSpeak AI</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <h1>Hackrpi Project Title</h1>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤟 SignSpeak AI</h1>
-            <p>Real-time ASL Translation System</p>
-        </header>
-        
-        <main>
-            <div class="camera-section">
-                <h2>📹 Camera Feed</h2>
-                <div id="camera-container">
-                    <!-- Camera feed will be inserted here -->
-                </div>
-            </div>
-            
-            <div class="translation-section">
-                <h2>📝 Translation</h2>
-                <div id="sentence-display">
-                    <!-- Current sentence will appear here -->
-                </div>
-                <div id="translation-display">
-                    <!-- Translation will appear here -->
+    <div class="site">
+        <main class="main">
+            <div class="topbar">
+                <div class="dot-3">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
                 <div class="controls">
-                    <button id="speak-btn">🎤 Speak</button>
-                    <button id="reset-btn">🔄 Reset</button>
+                    <button id="startStop" class="retro-btn">Start</button>
+                    <button id="speak-btn" class="retro-btn">Speak</button>
+                    <button id="reset-btn" class="retro-btn">Reset</button>
                 </div>
             </div>
+
+            <div class="video-and-text-container">
+                <div class="content-card video-card">
+                    <h3>Live Camera Feed</h3>
+                    <!-- video element shows camera feed -->
+                    <video id="video" autoplay playsinline muted style="width:100%; border-radius:75px;"></video>
+                </div>
+
+                <div class="content-card text-input-card">
+                    <h3>Text Output</h3>
+                    <div id="textOutput" style="width:100%; min-height:200px; padding:15px; border:2px solid var(--text-dark); border-radius:10px; font-family:inherit; background:rgba(255,255,255,0.5); overflow-y:auto;">
+                        <p style="margin:0; color:var(--text-dark); opacity:0.6;">Output will appear here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card margin-top-medium">
+                <h3>Additional Features</h3>
+                <p style="color:var(--color-text-dark); opacity:0.6;">To be implemented later...</p>
+                <canvas id="photo" class="pixelated-image" style="max-width:100%; display:none;"></canvas>
+            </div>
+
+            <footer>
+                <small>Sign radically, and embrace the groove</small>
+            </footer>
         </main>
     </div>
-    
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
