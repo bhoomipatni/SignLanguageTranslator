@@ -1,4 +1,5 @@
 # SignSpeak AI Requirements
+# Requires Python 3.11.x for MediaPipe compatibility
 
 # Core dependencies
 streamlit>=1.28.0
