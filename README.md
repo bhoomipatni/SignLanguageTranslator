@@ -1,4 +1,4 @@
-# SignSpeak AI
+# The HandStand
 
 A real-time American Sign Language (ASL) translation system built for hackathons and educational purposes. This project combines computer vision, machine learning, and natural language processing to translate ASL finger spelling into text and speech in multiple languages.
 
