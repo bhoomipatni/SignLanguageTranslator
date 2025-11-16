@@ -24,6 +24,17 @@ body{
      radial-gradient(circle at 20% 30%, var(--bg-2) 0%, transparent 50%),
      radial-gradient(circle at 80% 70%, var(--bg-3) 0%, transparent 50%),
      linear-gradient(135deg, #FFE5B4 0%, #FFD1DC 50%, #87CEEB 100%);
+     background-image:
+     radial-gradient(circle at center, rgb(0, 110, 255) 0%, rgb(191, 0, 255) 0%, transparent 61%),
+     conic-gradient(from 0deg at center, 
+        #0044ff 0deg 40deg, 
+        #ff44ff 40deg 80deg, 
+        #5100ff 80deg 120deg,
+        #e866ff 120deg 160deg,
+        #0008ff 160deg 200deg,
+        #f133ff 200deg 240deg,
+        #bf00ff 240deg 360deg
+    );
   color:var(--text-dark);
   overflow-y:auto;
   padding:48px 24px;
