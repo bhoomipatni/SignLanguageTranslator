@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
             running = true;
             startStop.textContent = 'Stop';
             
-            // Start ASL processing
-            processingInterval = setInterval(processCurrentFrame, 1000); // Process every second
+            // Start ASL processing with reduced frequency to avoid overwhelming APIs
+            processingInterval = setInterval(processCurrentFrame, 2000); // Process every 2 seconds instead of 1
             updateTextOutput('ASL Recognition Active - Show your gestures!');
         } catch (err) {
             alert('Camera access denied or not available: ' + err.message);
@@ -89,11 +89,63 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             const result = await response.json();
-            console.log('Backend response:', result);
+            console.log('🔄 Backend response received:', JSON.stringify(result, null, 2));
             
-            if (result.success && result.gesture && result.gesture !== 'Unknown') {
-                const confidence = (result.confidence * 100).toFixed(1);
-                updateTextOutput(`Detected: ${result.gesture} (${confidence}% confident)`);
+            // Always try to update UI elements if they exist
+            const currentGesture = document.getElementById('currentGesture');
+            const confidenceEl = document.getElementById('confidence'); 
+            const gestureCount = document.getElementById('gestureCount');
+            const translationText = document.getElementById('translationText');
+            
+            console.log('🎯 UI Elements found:', {
+                currentGesture: !!currentGesture,
+                confidenceEl: !!confidenceEl,
+                gestureCount: !!gestureCount,
+                translationText: !!translationText
+            });
+            
+            if (result.success) {
+                // Update translation text
+                if (result.translation && translationText) {
+                    translationText.textContent = result.translation;
+                    console.log('✅ Updated translation text to:', result.translation);
+                } else if (result.translation) {
+                    updateTextOutput(result.translation);
+                    console.log('✅ Updated text output to:', result.translation);
+                }
+                
+                // Update gesture info if gesture detected
+                if (result.gesture && result.gesture !== 'Unknown' && result.gesture !== null) {
+                    const confidence = (result.confidence * 100).toFixed(1);
+                    
+                    if (currentGesture) {
+                        // Add visual indicator for live preview vs confirmed detection
+                        const prefix = result.live_preview ? "👁️ " : "✅ ";
+                        currentGesture.textContent = prefix + result.gesture;
+                        console.log('✅ Updated currentGesture to:', prefix + result.gesture);
+                    }
+                    if (confidenceEl) {
+                        confidenceEl.textContent = `${confidence}%`;
+                        console.log('✅ Updated confidence to:', `${confidence}%`);
+                    }
+                    
+                    // Also update main text output for backup
+                    if (!result.live_preview) {
+                        updateTextOutput(`Detected: ${result.gesture} (${confidence}% confident)`);
+                    }
+                } else if (!result.detection_active && !result.live_preview) {
+                    // Clear gesture info when no hand is detected and not in detection mode
+                    if (currentGesture) currentGesture.textContent = 'None';
+                    if (confidenceEl) confidenceEl.textContent = '0%';
+                }
+                
+                // Update gesture count only for confirmed detections (not live preview)
+                if (result.gesture_count !== undefined && gestureCount && !result.live_preview) {
+                    gestureCount.textContent = result.gesture_count.toString();
+                    console.log('✅ Updated gesture count to:', result.gesture_count);
+                }
+            } else {
+                console.log('❌ Processing failed:', result);
             }
         } catch (error) {
             console.error('Error processing frame:', error);
@@ -101,7 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateTextOutput(message) {
-        textOutput.innerHTML = `<p style="margin:0; color:var(--text-dark);">${message}</p>`;
+        const translationText = document.getElementById('translationText');
+        if (translationText) {
+            translationText.textContent = message;
+        } else {
+            textOutput.innerHTML = `<p style="margin:0; color:var(--text-dark);">${message}</p>`;
+        }
     }
 
     startStop.addEventListener('click', () => {

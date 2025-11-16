@@ -38,6 +38,7 @@ class ASLPipeline:
         # State for single-gesture detection mode
         self.detected_gestures = []
         self.last_gesture = None
+        self.last_spoken_gesture = None  # Track last gesture that was spoken
         self.gesture_count = 0
         self.detection_active = False  # Manual start/auto stop
         
@@ -57,17 +58,7 @@ class ASLPipeline:
     def process_frame(self, frame) -> Dict[str, Any]:
         """Process a single frame and return recognition results"""
         try:
-            # Only process if detection is active
-            if not self.detection_active:
-                return {
-                    'success': True,
-                    'gesture': None,
-                    'confidence': 0,
-                    'translation': 'Press "Start Detection" to begin',
-                    'gesture_count': self.gesture_count,
-                    'detection_active': False
-                }
-            
+            # Always process frames for live feedback, regardless of detection_active
             # Step 1: Detect hands using MediaPipe
             landmarks = self.hand_tracker.detect_hands(frame)
             print(f"Debug: Landmarks detected: {landmarks is not None}")
@@ -85,65 +76,91 @@ class ASLPipeline:
                     # Convert internal gesture name to display name
                     display_gesture = self.gesture_display_names.get(gesture, gesture)
                     
-                    # Single gesture mode - detect once and stop
-                    self.gesture_count += 1
-                    
-                    # Use ONLY the current gesture (no accumulation, no sentence building)
-                    current_sentence = display_gesture
-                    improved_sentence = display_gesture  # Start with just the gesture
-                    
-                    # Improve sentence with Gemini (if available) - but keep it simple for single gestures
-                    if self.translator:
-                        try:
-                            # For single gestures, maybe just clean up the text slightly
-                            improved_sentence = self.translator.improve_sentence(display_gesture)
-                            if not improved_sentence or improved_sentence.strip() == "":
+                    # Only trigger speech and translation when detection is active AND gesture is different from last spoken
+                    if self.detection_active and display_gesture != self.last_spoken_gesture:
+                        # Single gesture mode - detect once and stop
+                        self.gesture_count += 1
+                        self.last_spoken_gesture = display_gesture  # Prevent repeat speech
+                        
+                        # Use ONLY the current gesture (no accumulation, no sentence building)
+                        current_sentence = display_gesture
+                        improved_sentence = display_gesture  # Start with just the gesture
+                        
+                        # Improve sentence with Gemini (if available) - but keep it simple for single gestures
+                        if self.translator:
+                            try:
+                                # For single gestures, maybe just clean up the text slightly
+                                improved_sentence = self.translator.improve_sentence(display_gesture)
+                                if not improved_sentence or improved_sentence.strip() == "":
+                                    improved_sentence = display_gesture
+                            except:
                                 improved_sentence = display_gesture
-                        except:
-                            improved_sentence = display_gesture
-                    
-                    # Generate speech with ElevenLabs (if available) - speak only current gesture
-                    speech_success = False
-                    if self.speech_synthesizer:
-                        try:
-                            speech_success = self.speech_synthesizer.speak_text(improved_sentence)
-                        except Exception as e:
-                            print(f"Speech synthesis error: {e}")
-                    
-                    # AUTOMATICALLY STOP after detection and speech
-                    self.detection_active = False
-                    self.last_gesture = None  # Reset for next detection
-                    # DON'T add to detected_gestures list - keep it independent
-                    
-                    result = {
-                        'gesture': display_gesture,
-                        'confidence': confidence,
-                        'translation': improved_sentence,
-                        'sentence': display_gesture,  # Always just the single gesture
-                        'gesture_count': self.gesture_count,
-                        'speech_played': speech_success,
-                        'success': True,
-                        'detection_active': False,  # Now stopped
-                        'auto_stopped': True  # Flag to indicate auto-stop
-                    }
-                    
-                    print(f"🤟 Gesture: {display_gesture}")
-                    print(f"📝 Translation: {improved_sentence}")
-                    print(f"🛑 Auto-stopped after detection")
-                    
-                    return result
+                        
+                        # Generate speech with ElevenLabs IMMEDIATELY (if available)
+                        speech_success = False
+                        if self.speech_synthesizer:
+                            try:
+                                print(f"🔊 Speaking: {improved_sentence}")
+                                speech_success = self.speech_synthesizer.speak_text(improved_sentence)
+                            except Exception as e:
+                                print(f"Speech synthesis error: {e}")
+                        
+                        # AUTOMATICALLY STOP after detection and speech
+                        self.detection_active = False
+                        self.last_gesture = None  # Reset for next detection
+                        
+                        result = {
+                            'gesture': display_gesture,
+                            'confidence': confidence,
+                            'translation': improved_sentence,
+                            'sentence': display_gesture,  # Always just the single gesture
+                            'gesture_count': self.gesture_count,
+                            'speech_played': speech_success,
+                            'success': True,
+                            'detection_active': False,  # Now stopped
+                            'auto_stopped': True  # Flag to indicate auto-stop
+                        }
+                        
+                        print(f"🤟 Gesture: {display_gesture}")
+                        print(f"📝 Translation: {improved_sentence}")
+                        print(f"🛑 Auto-stopped after detection")
+                        
+                        return result
+                    else:
+                        # Live preview mode - show gesture without triggering actions
+                        return {
+                            'gesture': display_gesture,
+                            'confidence': confidence,
+                            'translation': f' {display_gesture} ({(confidence * 100):.1f}%)',
+                            'sentence': display_gesture,
+                            'gesture_count': self.gesture_count,
+                            'speech_played': False,
+                            'success': True,
+                            'detection_active': False,
+                            'live_preview': True  # Flag to indicate this is live preview
+                        }
                 else:
                     print(f"Debug: Prediction confidence too low: {prediction.get('confidence', 0) if prediction else 'None'}")
             
-            # No gesture detected but detection is still active
-            print("Debug: No gesture detected, still listening...")
-            return {
-                'gesture': None,
-                'confidence': 0.0,
-                'translation': 'Listening for gesture...',
-                'detection_active': True,
-                'success': True
-            }
+            # No gesture detected
+            if self.detection_active:
+                print("Debug: No gesture detected, still listening...")
+                return {
+                    'gesture': None,
+                    'confidence': 0.0,
+                    'translation': 'Listening for gesture...',
+                    'detection_active': True,
+                    'success': True
+                }
+            else:
+                return {
+                    'gesture': None,
+                    'confidence': 0.0,
+                    'translation': 'Show your hand to see live gesture recognition',
+                    'detection_active': False,
+                    'success': True,
+                    'live_preview': True
+                }
             
         except Exception as e:
             print(f"Error in pipeline processing: {e}")
@@ -170,8 +187,9 @@ class ASLPipeline:
         print("🎯 Detection started - show your gesture!")
     
     def stop_detection(self):
-        """Stop gesture detection"""
+        """Stop gesture detection mode"""
         self.detection_active = False
+        self.last_spoken_gesture = None  # Reset for next session
         print("🛑 Detection stopped")
 
 class ASLTranslationPipeline:

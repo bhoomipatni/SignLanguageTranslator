@@ -51,10 +51,10 @@ def debug():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Debug - SignSpeak AI</title>
+        <title>Debug - The HandStand</title>
     </head>
     <body>
-        <h1>🤟 SignSpeak AI - Debug Page</h1>
+        <h1>🤟 The HandStand - Debug Page</h1>
         <p>This is a hardcoded HTML page to test if Flask is working.</p>
         <p>If you see this, the server is working but there might be a template issue.</p>
         <p>Try the main page: <a href="/">Main Page</a></p>
@@ -66,7 +66,7 @@ def debug():
 @app.route('/simple')
 def simple_test():
     return """
-    <h1>🤟 SignSpeak AI - Simple Test</h1>
+    <h1>🤟 The HandStand - Simple Test</h1>
     <p>If you can see this, the Flask app is working!</p>
     <p>Main interface should be at <a href="/">http://127.0.0.1:5001</a></p>
     """
@@ -114,6 +114,9 @@ def process_frame():
         # Process the frame using lazy-loaded pipeline
         current_pipeline = get_pipeline()
         result = current_pipeline.process_frame(frame)
+        
+        # Debug: Print what we're sending to frontend
+        print(f"🔄 Sending to frontend: {result}")
         
         return jsonify(result)
         
@@ -216,7 +219,7 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5001))
     print("=" * 50)
-    print("🚀 Starting SignSpeak AI Flask App")
+    print("🚀 Starting The HandStand Flask App")
     print(f"📁 Templates folder: {os.path.abspath(app.template_folder)}")
     print(f"📁 Static folder: {os.path.abspath(app.static_folder)}")
     print(f"📍 Main interface: http://0.0.0.0:{port}/")

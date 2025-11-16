@@ -1,4 +1,4 @@
-# SignSpeak AI Requirements
+# The HandStand Requirements
 # Requires Python 3.11.x for MediaPipe compatibility
 
 # Core dependencies
