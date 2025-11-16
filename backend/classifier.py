@@ -1,6 +1,6 @@
 """
-ASL Classifier Module
-Loads and manages ASL classification models
+ASL Gesture Classifier
+Classifies full ASL signs (words/phrases) — currently supports "Hello" and "Thank you"
 """
 
 import numpy as np
@@ -8,119 +8,186 @@ import pickle
 import os
 from typing import Optional, Dict, Any
 from utils.config import MODEL_PATHS
-# import tensorflow as tf  # For CNN model
 
 class ASLClassifier:
-    def __init__(self, model_path: Optional[str] = None):
-        """Initialize ASL classifier"""
-        self.model = None
-        self.model_path = model_path
-        self.classes = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        self.model_type = "mock"  # Will be 'pickle', 'tensorflow', or 'mock'
+    def __init__(self):
+        """Initialize ASL gesture classifier"""
+        self.trained_phrases = {}
+        self.model_type = "mock"
         
-        # Load model if available
+        # Your trained gesture classes
+        self.classes = ["HELLO", "THANK YOU"]
+        
         self.load_model()
-        
-    def load_model(self, model_type: str = "pickle") -> bool:
-        """Load pre-trained ASL model"""
+
+    def load_model(self):
+        """Load your trained phrase data"""
         try:
-            # Try to load pickle model first
             if os.path.exists(MODEL_PATHS['asl_pickle']):
-                with open(MODEL_PATHS['asl_pickle'], 'rb') as f:
-                    self.model = pickle.load(f)
-                    self.model_type = "pickle"
-                    print("Loaded pickle ASL model")
+                with open(MODEL_PATHS['asl_pickle'], "rb") as f:
+                    self.trained_phrases = pickle.load(f)
+                    self.model_type = "phrase_data"
+                    print(f"✅ Loaded phrase data: {list(self.trained_phrases.keys())}")
                     return True
-                    
-            # Try to load TensorFlow model
-            elif os.path.exists(MODEL_PATHS['asl_cnn']):
-                # Uncomment when you have tensorflow model
-                # import tensorflow as tf
-                # self.model = tf.keras.models.load_model(MODEL_PATHS['asl_cnn'])
-                # self.model_type = "tensorflow"
-                # print("Loaded TensorFlow ASL model")
-                # return True
-                pass
-                
-            else:
-                print("No pre-trained model found, using mock classifier")
-                self.model_type = "mock"
-                return True
-                
-        except Exception as e:
-            print(f"Error loading model: {e}")
-            self.model_type = "mock"
-            return False
-    
-    def predict(self, landmarks: np.ndarray) -> Optional[Dict[str, Any]]:
-        """Predict ASL letter from hand landmarks"""
-        if landmarks is None or len(landmarks) != 42:
-            return None
             
+            print("⚠️ No trained phrase data found — using mock classifier.")
+            return False
+        
+        except Exception as e:
+            print(f"⚠️ Failed to load phrase data: {e}")
+            return False
+
+    def predict_single_frame(self, landmarks) -> Optional[Dict[str, Any]]:
+        """Predict gesture from single frame landmarks (for web interface)"""
+        if landmarks is None or len(landmarks) == 0:
+            return None
+        
         try:
-            if self.model_type == "pickle" and self.model is not None:
-                return self._predict_with_pickle(landmarks)
-            elif self.model_type == "tensorflow" and self.model is not None:
-                return self._predict_with_tensorflow(landmarks)
+            if self.model_type == "phrase_data":
+                # For web interface, we'll use a simple approach:
+                # Compare single frame with first frame of each trained gesture
+                return self._predict_single_frame_with_data(landmarks)
             else:
-                return self._mock_prediction(landmarks)
-                
+                return self._mock_prediction()
+        except Exception as e:
+            print(f"Single frame prediction error: {e}")
+            return None
+    
+    def _predict_single_frame_with_data(self, landmarks):
+        """Predict using single frame comparison with trained data"""
+        if not self.trained_phrases:
+            print("Debug: No trained phrases available")
+            return None
+        
+        print(f"Debug: Starting classification with landmarks length: {len(landmarks)}")
+        print(f"Debug: Available phrases: {list(self.trained_phrases.keys())}")
+        
+        best_phrase = None
+        best_score = float('inf')
+        confidence_threshold = 5000.0  # Much higher threshold based on observed scores
+        
+        # Compare with each trained phrase's first frame
+        for phrase_name, samples_list in self.trained_phrases.items():
+            print(f"Debug: Checking phrase '{phrase_name}' with {len(samples_list)} samples")
+            for i, sample in enumerate(samples_list):
+                if 'gesture_sequence' in sample and len(sample['gesture_sequence']) > 0:
+                    # Get first frame from trained data
+                    first_frame = sample['gesture_sequence'][0]
+                    
+                    if isinstance(first_frame, dict) and 'landmarks' in first_frame:
+                        trained_landmarks = first_frame['landmarks']
+                        print(f"Debug: Sample {i} trained landmarks length: {len(trained_landmarks)}")
+                        
+                        # Convert our MediaPipe landmarks to match trained format
+                        # MediaPipe gives us 21 landmarks * 2 coordinates (x,y) = 42 values
+                        # Trained data has 126 values = 2 hands * 21 landmarks * 3 coordinates
+                        if len(landmarks) == 42:  # 21 landmarks × 2 coords
+                            # Convert [x1,y1,x2,y2,...] to [x1,y1,0,x2,y2,0,...] for first hand
+                            first_hand_landmarks = []
+                            for j in range(0, len(landmarks), 2):
+                                first_hand_landmarks.extend([landmarks[j], landmarks[j+1], 0.0])
+                            
+                            # Add zeros for second hand (63 values)
+                            second_hand_landmarks = [0.0] * 63
+                            
+                            # Combine both hands: first hand (63) + second hand (63) = 126
+                            extended_landmarks = first_hand_landmarks + second_hand_landmarks
+                            
+                            if len(extended_landmarks) == len(trained_landmarks):
+                                score = np.linalg.norm(np.array(extended_landmarks) - np.array(trained_landmarks))
+                                print(f"Debug: Phrase '{phrase_name}' sample {i} score: {score}")
+                                if score < best_score:
+                                    best_score = score
+                                    best_phrase = phrase_name
+                            else:
+                                print(f"Debug: Extended landmark length mismatch: {len(extended_landmarks)} vs {len(trained_landmarks)}")
+                        else:
+                            print(f"Debug: Unexpected landmarks length: {len(landmarks)}, expected 42")
+                    else:
+                        print(f"Debug: Sample {i} frame format unexpected: {type(first_frame)}")
+                else:
+                    print(f"Debug: Sample {i} has no gesture_sequence or empty sequence")
+        
+        print(f"Debug: Best phrase: {best_phrase}, best score: {best_score}, threshold: {confidence_threshold}")
+        
+        # Return result if confidence is good enough
+        if best_score < confidence_threshold:
+            confidence = max(0.0, min(1.0, 1.0 - (best_score / confidence_threshold)))
+            result = {
+                "gesture": best_phrase,
+                "confidence": confidence,
+                "success": True
+            }
+            print(f"Debug: Returning successful prediction: {result}")
+            return result
+        
+        print(f"Debug: Score {best_score} above threshold {confidence_threshold}, returning None")
+        return None
+
+    def predict(self, landmarks_sequence) -> Optional[Dict[str, Any]]:
+        """Predict a phrase from a sequence of hand landmarks"""
+        if landmarks_sequence is None or len(landmarks_sequence) == 0:
+            return None
+        
+        try:
+            if self.model_type == "phrase_data":
+                return self._predict_with_phrase_data(landmarks_sequence)
+            else:
+                return self._mock_prediction()
         except Exception as e:
             print(f"Prediction error: {e}")
-            return self._mock_prediction(landmarks)
+            return None
+    def _predict_with_phrase_data(self, landmarks_sequence):
+        """Prediction using your trained phrase data with similarity matching"""
+        if not self.trained_phrases:
+            return None
+        
+        best_phrase = None
+        best_score = float('inf')
+        confidence_threshold = 3.0  # Based on your training results
+        
+        # Compare with each trained phrase
+        for phrase_name, samples_list in self.trained_phrases.items():
+            # Your data format: phrase_name -> list of sample dictionaries
+            for sample in samples_list:
+                if 'gesture_sequence' in sample:
+                    score = self._calculate_similarity(landmarks_sequence, sample['gesture_sequence'])
+                    if score < best_score:
+                        best_score = score
+                        best_phrase = phrase_name
+        
+        # Return result if confidence is good enough
+        if best_score < confidence_threshold:
+            return {
+                "gesture": best_phrase,
+                "confidence": float(best_score),
+                "success": True
+            }
+        
+        return None
     
-    def _predict_with_pickle(self, landmarks: np.ndarray) -> Dict[str, Any]:
-        """Make prediction using scikit-learn model"""
-        # Reshape for sklearn (expects 2D input)
-        input_data = landmarks.reshape(1, -1)
+    def _calculate_similarity(self, current_sequence, trained_sequence):
+        """Calculate similarity between gesture sequences (simple DTW-like)"""
+        if len(current_sequence) == 0 or len(trained_sequence) == 0:
+            return float('inf')
         
-        # Get prediction and probability
-        prediction = self.model.predict(input_data)[0]
-        probabilities = self.model.predict_proba(input_data)[0]
+        min_length = min(len(current_sequence), len(trained_sequence))
+        total_distance = 0
         
-        # Get confidence score
-        confidence = np.max(probabilities)
+        for i in range(min_length):
+            if len(current_sequence[i]) == len(trained_sequence[i]):
+                frame_distance = np.linalg.norm(
+                    np.array(current_sequence[i]) - np.array(trained_sequence[i])
+                )
+                total_distance += frame_distance
         
+        return total_distance / min_length if min_length > 0 else float('inf')
+
+    def _mock_prediction(self):
+        """Mock classifier for testing without a trained model"""
+        idx = np.random.choice(len(self.classes))
         return {
-            "letter": self.classes[prediction],
-            "confidence": float(confidence),
-            "probabilities": {self.classes[i]: float(prob) for i, prob in enumerate(probabilities)}
+            "gesture": self.classes[idx],
+            "confidence": float(np.random.uniform(0.7, 0.95)),
+            "mock": True
         }
-    
-    def _predict_with_tensorflow(self, landmarks: np.ndarray) -> Dict[str, Any]:
-        """Make prediction using TensorFlow model"""
-        # Reshape for TensorFlow
-        input_data = landmarks.reshape(1, 42, 1)  # Adjust shape as needed
-        
-        # Make prediction
-        predictions = self.model.predict(input_data, verbose=0)[0]
-        
-        # Get best prediction
-        predicted_idx = np.argmax(predictions)
-        confidence = float(predictions[predicted_idx])
-        
-        return {
-            "letter": self.classes[predicted_idx],
-            "confidence": confidence,
-            "probabilities": {self.classes[i]: float(prob) for i, prob in enumerate(predictions)}
-        }
-    
-    def _mock_prediction(self, landmarks: np.ndarray) -> Dict[str, Any]:
-        """Mock prediction for testing without real model"""
-        # Simple mock: use hand position to determine letter
-        landmarks_2d = landmarks.reshape(21, 2)
-        
-        # Use fingertip positions for mock classification
-        thumb_tip = landmarks_2d[4]
-        index_tip = landmarks_2d[8]
-        middle_tip = landmarks_2d[12]
-        ring_tip = landmarks_2d[16]
-        pinky_tip = landmarks_2d[20]
-        
-        # Simple heuristics for common letters
-        # This is just for demonstration - real model would be much more sophisticated
-        
-        # Calculate finger extensions (relative to palm center)
-        palm_center = np.mean(landmarks_2d[[0, 5, 9, 13, 17]], axis=0)
-        
-        finger_distances = {\n            'thumb': np.linalg.norm(thumb_tip - palm_center),\n            'index': np.linalg.norm(index_tip - palm_center),\n            'middle': np.linalg.norm(middle_tip - palm_center),\n            'ring': np.linalg.norm(ring_tip - palm_center),\n            'pinky': np.linalg.norm(pinky_tip - palm_center)\n        }\n        \n        # Mock classification based on simple rules\n        extended_fingers = [finger for finger, dist in finger_distances.items() if dist > 50]\n        \n        if len(extended_fingers) == 1:\n            if 'index' in extended_fingers:\n                letter = 'I'\n            elif 'thumb' in extended_fingers:\n                letter = 'A'\n            else:\n                letter = 'L'\n        elif len(extended_fingers) == 2:\n            if 'index' in extended_fingers and 'middle' in extended_fingers:\n                letter = 'V'\n            else:\n                letter = 'U'\n        elif len(extended_fingers) >= 4:\n            letter = 'B'\n        else:\n            # Random letter for other cases\n            letter = np.random.choice(['H', 'E', 'L', 'O', 'W', 'R', 'D'])\n        \n        # Add some randomness to confidence\n        confidence = np.random.uniform(0.7, 0.95)\n        \n        # Create mock probabilities\n        probabilities = np.random.uniform(0.01, 0.1, 26)\n        letter_idx = self.classes.index(letter)\n        probabilities[letter_idx] = confidence\n        probabilities = probabilities / np.sum(probabilities)  # Normalize\n        \n        return {\n            \"letter\": letter,\n            \"confidence\": float(confidence),\n            \"probabilities\": {self.classes[i]: float(prob) for i, prob in enumerate(probabilities)},\n            \"mock\": True\n        }\n    \n    def predict_batch(self, landmark_batch: np.ndarray) -> List[Dict[str, Any]]:\n        \"\"\"Predict multiple ASL letters at once\"\"\"\n        results = []\n        for landmarks in landmark_batch:\n            prediction = self.predict(landmarks)\n            if prediction:\n                results.append(prediction)\n        return results\n    \n    def get_confidence_threshold(self) -> float:\n        \"\"\"Return minimum confidence threshold for predictions\"\"\"\n        return 0.7  # Default threshold\n    \n    def get_model_info(self) -> Dict[str, Any]:\n        \"\"\"Get information about the loaded model\"\"\"\n        return {\n            \"model_type\": self.model_type,\n            \"model_loaded\": self.model is not None,\n            \"classes\": len(self.classes),\n            \"confidence_threshold\": self.get_confidence_threshold()\n        }
