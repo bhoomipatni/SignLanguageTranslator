@@ -1,0 +1,178 @@
+[
+  {
+    "video_id": "14353",
+    "word": "14353",
+    "label": 0,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\14353.npy",
+    "num_frames": 40,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\14353.mp4"
+  },
+  {
+    "video_id": "1468580623.2588",
+    "word": "1468580623.2588",
+    "label": 1,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\1468580623.2588.npy",
+    "num_frames": 58,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\1468580623.2588.mp4"
+  },
+  {
+    "video_id": "1468754067.6864",
+    "word": "1468754067.6864",
+    "label": 2,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\1468754067.6864.npy",
+    "num_frames": 80,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\1468754067.6864.mp4"
+  },
+  {
+    "video_id": "1468944231.2757",
+    "word": "1468944231.2757",
+    "label": 3,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\1468944231.2757.npy",
+    "num_frames": 68,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\1468944231.2757.mp4"
+  },
+  {
+    "video_id": "1522767174.1064",
+    "word": "1522767174.1064",
+    "label": 4,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\1522767174.1064.npy",
+    "num_frames": 80,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\1522767174.1064.mp4"
+  },
+  {
+    "video_id": "1522767348.9440",
+    "word": "1522767348.9440",
+    "label": 5,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\1522767348.9440.npy",
+    "num_frames": 66,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\1522767348.9440.mp4"
+  },
+  {
+    "video_id": "25ymRY7hbjs",
+    "word": "25ymRY7hbjs",
+    "label": 6,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\25ymRY7hbjs.npy",
+    "num_frames": 6882,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\25ymRY7hbjs.mp4"
+  },
+  {
+    "video_id": "6353",
+    "word": "6353",
+    "label": 7,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\6353.npy",
+    "num_frames": 31,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\6353.mp4"
+  },
+  {
+    "video_id": "6966",
+    "word": "6966",
+    "label": 8,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\6966.npy",
+    "num_frames": 44,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\6966.mp4"
+  },
+  {
+    "video_id": "7XHOmZYiBew",
+    "word": "7XHOmZYiBew",
+    "label": 9,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\7XHOmZYiBew.npy",
+    "num_frames": 90,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\7XHOmZYiBew.mp4"
+  },
+  {
+    "video_id": "DYjjcoTkNa0",
+    "word": "DYjjcoTkNa0",
+    "label": 10,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\DYjjcoTkNa0.npy",
+    "num_frames": 113,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\DYjjcoTkNa0.mp4"
+  },
+  {
+    "video_id": "FVjpLa8GqeM",
+    "word": "FVjpLa8GqeM",
+    "label": 11,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\FVjpLa8GqeM.npy",
+    "num_frames": 54,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\FVjpLa8GqeM.mp4"
+  },
+  {
+    "video_id": "hjS0dQDgbjo",
+    "word": "hjS0dQDgbjo",
+    "label": 12,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\hjS0dQDgbjo.npy",
+    "num_frames": 5692,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\hjS0dQDgbjo.mp4"
+  },
+  {
+    "video_id": "please",
+    "word": "please",
+    "label": 13,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\please.npy",
+    "num_frames": 86,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\please.mp4"
+  },
+  {
+    "video_id": "rnb9FxPO7is",
+    "word": "rnb9FxPO7is",
+    "label": 14,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\rnb9FxPO7is.npy",
+    "num_frames": 72,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\rnb9FxPO7is.mp4"
+  },
+  {
+    "video_id": "SiBub8VD5wo",
+    "word": "SiBub8VD5wo",
+    "label": 15,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\SiBub8VD5wo.npy",
+    "num_frames": 2792,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\SiBub8VD5wo.mp4"
+  },
+  {
+    "video_id": "SignSchool Hello-6kvCOzxP9_A",
+    "word": "SignSchool Hello-6kvCOzxP9",
+    "label": 16,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\SignSchool Hello-6kvCOzxP9_A.npy",
+    "num_frames": 69,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\SignSchool Hello-6kvCOzxP9_A.mp4"
+  },
+  {
+    "video_id": "SignSchool Please-eyu0V3s1-XA",
+    "word": "SignSchool Please",
+    "label": 17,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\SignSchool Please-eyu0V3s1-XA.npy",
+    "num_frames": 65,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\SignSchool Please-eyu0V3s1-XA.mp4"
+  },
+  {
+    "video_id": "SignSchool ThankYou-OGQTouYS3zM",
+    "word": "SignSchool ThankYou",
+    "label": 18,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\SignSchool ThankYou-OGQTouYS3zM.npy",
+    "num_frames": 75,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\SignSchool ThankYou-OGQTouYS3zM.mp4"
+  },
+  {
+    "video_id": "thank you",
+    "word": "thank you",
+    "label": 19,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\thank you.npy",
+    "num_frames": 82,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\thank you.mp4"
+  },
+  {
+    "video_id": "x6CehcknaH8",
+    "word": "x6CehcknaH8",
+    "label": 20,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\x6CehcknaH8.npy",
+    "num_frames": 5649,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\x6CehcknaH8.mp4"
+  },
+  {
+    "video_id": "zHd4YEFzpwE",
+    "word": "zHd4YEFzpwE",
+    "label": 21,
+    "keypoints_file": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\processed\\keypoints\\zHd4YEFzpwE.npy",
+    "num_frames": 7221,
+    "source_video": "C:\\Users\\Isabel\\Documents\\GitHub\\SignLanguageTranslator\\sign-language-recognition\\data\\raw\\wlasl\\videos\\zHd4YEFzpwE.mp4"
+  }
+]
